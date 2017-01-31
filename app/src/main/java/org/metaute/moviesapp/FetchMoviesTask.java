@@ -1,8 +1,15 @@
 package org.metaute.moviesapp;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import org.json.JSONException;
+import org.metaute.moviesapp.org.metaute.model.MovieInfo;
+import org.metaute.moviesapp.org.metaute.util.MovieDataJsonParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +24,7 @@ import java.util.ArrayList;
  * Created by metaute on 1/5/17.
  */
 
-public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<String>> {
+public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<MovieInfo>> {
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
     private MoviesInfoConsumer consumer;
 
@@ -26,7 +33,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<String>> 
     }
 
     @Override
-    protected ArrayList<String> doInBackground(String... strings) {
+    protected ArrayList<MovieInfo> doInBackground(String... strings) {
         ArrayList<String> results = new ArrayList<String>();
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -63,6 +70,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<String>> 
                 return null;
             }
             moviesDataJson = buffer.toString();
+            Log.v(LOG_TAG, moviesDataJson);
         } catch (ProtocolException pe) {
             Log.e(LOG_TAG, "Protocol Error: ", pe);
             return null;
@@ -80,15 +88,21 @@ public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<String>> 
                 }
             }
         }
-        return results;
+        try {
+            return MovieDataJsonParser.getMoviesDataFromJson(moviesDataJson);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<String> moviesResponse) {
+    protected void onPostExecute(ArrayList<MovieInfo> moviesResponse) {
         consumer.onFetchFinished(moviesResponse);
     }
 
     public interface MoviesInfoConsumer {
-        void onFetchFinished(ArrayList<String> results);
+        void onFetchFinished(ArrayList<MovieInfo> results);
     }
 }

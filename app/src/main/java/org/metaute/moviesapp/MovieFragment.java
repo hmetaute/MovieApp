@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import org.metaute.moviesapp.dummy.DummyContent;
 import org.metaute.moviesapp.dummy.DummyContent.DummyItem;
+import org.metaute.moviesapp.org.metaute.model.MovieInfo;
 
 import java.util.ArrayList;
 
@@ -84,10 +85,11 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
             recyclerView.setAdapter(new MovieViewAdapter(DummyContent.ITEMS, mListener));
         }
         if (isOnline()) {
+            Log.v(LOG_TAG, "initializing getchMoviesTask");
             FetchMoviesTask weatherTask = new FetchMoviesTask(this);
             weatherTask.execute("");
         } else {
-            Toast.makeText(context, "There is no internet connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "There is no internet connection", Toast.LENGTH_SHORT).show();
         }
         return view;
     }
@@ -111,10 +113,10 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
     }
 
     @Override
-    public void onFetchFinished(ArrayList<String> results) {
+    public void onFetchFinished(ArrayList<MovieInfo> results) {
         Log.d(LOG_TAG, "results");
-        for(String result: results) {
-            Log.d(LOG_TAG, result);
+        for(MovieInfo result: results) {
+            Log.d(LOG_TAG, result.toString());
         }
     }
 
