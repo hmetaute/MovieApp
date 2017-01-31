@@ -1,19 +1,23 @@
 package org.metaute.moviesapp;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.metaute.moviesapp.dummy.DummyContent;
 import org.metaute.moviesapp.dummy.DummyContent.DummyItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A fragment representing a list of Items.
@@ -21,19 +25,27 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class MovieFragment extends Fragment {
+public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInfoConsumer {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private final String LOG_TAG = MovieFragment.class.getSimpleName();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public MovieFragment() {
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
     // TODO: Customize parameter initialization
@@ -71,6 +83,12 @@ public class MovieFragment extends Fragment {
             }
             recyclerView.setAdapter(new MovieViewAdapter(DummyContent.ITEMS, mListener));
         }
+        if (isOnline()) {
+            FetchMoviesTask weatherTask = new FetchMoviesTask(this);
+            weatherTask.execute("");
+        } else {
+            Toast.makeText(context, "There is no internet connection", Toast.LENGTH_SHORT).show();
+        }
         return view;
     }
 
@@ -90,6 +108,14 @@ public class MovieFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onFetchFinished(ArrayList<String> results) {
+        Log.d(LOG_TAG, "results");
+        for(String result: results) {
+            Log.d(LOG_TAG, result);
+        }
     }
 
     /**
