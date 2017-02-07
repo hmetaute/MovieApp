@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import org.metaute.moviesapp.MovieFragment.OnListFragmentInteractionListener;
 import org.metaute.moviesapp.dummy.DummyContent.DummyItem;
+import org.metaute.moviesapp.org.metaute.model.MovieInfo;
 
 import java.util.List;
 
@@ -18,10 +19,10 @@ import java.util.List;
  */
 public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<MovieInfo> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MovieViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MovieViewAdapter(List<MovieInfo> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -36,8 +37,8 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getTitle());
+        holder.mContentView.setText(mValues.get(position).getOverview());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +61,7 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.View
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public MovieInfo mItem;
 
         public ViewHolder(View view) {
             super(view);

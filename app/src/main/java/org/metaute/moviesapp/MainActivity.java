@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import org.metaute.moviesapp.dummy.DummyContent;
+import org.metaute.moviesapp.org.metaute.model.MovieInfo;
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnListFragmentInteractionListener{
 
@@ -21,8 +22,9 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnL
         }
     }
 
+
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-        Log.d(LOG_TAG, "OnlistFragmentInteraction");
+    public void onListFragmentInteraction(MovieInfo item) {
+        Log.v(LOG_TAG, "Clicked on movie: " + item.getTitle());
     }
 }

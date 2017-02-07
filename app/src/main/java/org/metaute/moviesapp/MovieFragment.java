@@ -34,6 +34,7 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
+    private MovieViewAdapter mAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -72,6 +73,7 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_list, container, false);
+        mAdapter = new MovieViewAdapter(new ArrayList<MovieInfo>(), mListener);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -82,7 +84,7 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MovieViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(mAdapter);
         }
         if (isOnline()) {
             Log.v(LOG_TAG, "initializing getchMoviesTask");
@@ -132,6 +134,6 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(MovieInfo item);
     }
 }
