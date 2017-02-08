@@ -27,13 +27,19 @@ import java.util.ArrayList;
 public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<MovieInfo>> {
     private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
     private MoviesInfoConsumer consumer;
+    public static final String POPULAR = "popular";
+    public static final String TOP_RATED = "top_rated";
 
     public FetchMoviesTask(MoviesInfoConsumer consumer) {
         this.consumer = consumer;
     }
 
     @Override
-    protected ArrayList<MovieInfo> doInBackground(String... strings) {
+    protected ArrayList<MovieInfo> doInBackground(String... params) {
+
+        if (params.length < 2) {
+            return null;
+        }
         ArrayList<String> results = new ArrayList<String>();
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -42,11 +48,16 @@ public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<MovieInfo
 
         try {
             final String FORECAST_BASE_URL =
-                    "http://api.themoviedb.org/3/movie/popular?api_key=b492c849d5a3acc408f971e6f80e1d97";
-            final String API_KEY_PARAm = "api_key";
+                    "http://api.themoviedb.org/3/movie";
+            final String API_KEY_PARAM = "api_key";
+            final String PAGE_PARAM = "page";
 
             Uri builtUri = Uri.parse(FORECAST_BASE_URL)
-                    .buildUpon().build();
+                    .buildUpon()
+                    .appendPath(params[0])
+                    .appendQueryParameter(API_KEY_PARAM, "b492c849d5a3acc408f971e6f80e1d97")
+                    .appendQueryParameter(PAGE_PARAM, params[1])
+                    .build();
             URL url = new URL(builtUri.toString());
 
             // Create the request to OpenWeatherMap, and open the connection

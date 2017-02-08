@@ -1,13 +1,14 @@
 package org.metaute.moviesapp;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInfoConsumer {
+public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInfoConsumer{
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -33,6 +34,8 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
     private OnListFragmentInteractionListener mListener;
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
     private MovieViewAdapter mAdapter;
+    private GridLayoutManager mLayoutManager;
+    private int pageCount = 1;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -78,16 +81,40 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, 3));
+                mLayoutManager = new GridLayoutManager(context, 3);
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                mLayoutManager = new GridLayoutManager(context, mColumnCount);
             }
+            recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(mAdapter);
+            recyclerView.addOnScrollListener(new OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    boolean loading = true;
+                    int pastVisiblesItems, visibleItemCount, totalItemCount;
+                    if(dy > 0) //check for scroll down
+                    {
+                        visibleItemCount = mLayoutManager.getChildCount();
+                        totalItemCount = mLayoutManager.getItemCount();
+                        pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                        if (loading)
+                        {
+                            if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                            {
+                                loading = false;
+                                Log.v("...", "Last Item Wow !");
+
+                            }
+                        }
+                    }
+                }
+            });
         }
         if (isOnline()) {
             Log.v(LOG_TAG, "initializing getchMoviesTask");
             FetchMoviesTask weatherTask = new FetchMoviesTask(this);
-            weatherTask.execute("");
+            weatherTask.execute(FetchMoviesTask.POPULAR, Integer.toString(pageCount));
         } else {
             Toast.makeText(getActivity(), "There is no internet connection", Toast.LENGTH_SHORT).show();
         }

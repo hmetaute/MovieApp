@@ -44,7 +44,7 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.View
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         URL imageUrl = MovieDatabaseUrlCreator
-                .getImageUrl(MovieDatabaseUrlCreator.STANDARD_IMAGE_SIZE,
+                .getImageUrl(MovieDatabaseUrlCreator.BIG_IMAGE_SIZE,
                         mValues.get(position).getPosterPath());
         Picasso.with(holder.mContentView.getContext())
                 .load(imageUrl.toString())

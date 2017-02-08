@@ -14,6 +14,7 @@ public class MovieDatabaseUrlCreator {
 
     private static final String BASE_URL = " http://image.tmdb.org/t/p/";
     public static final String STANDARD_IMAGE_SIZE = "w185";
+    public static final String BIG_IMAGE_SIZE = "w342";
 
     public static URL getImageUrl(String size, String posterUrl) {
         URL result = null;
