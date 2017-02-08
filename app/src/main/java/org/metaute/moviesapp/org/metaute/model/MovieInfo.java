@@ -29,6 +29,6 @@ public class MovieInfo {
 
     @Override
     public String toString() {
-        return "Title: " + title;
+        return "Title: " + title +", URL: " + posterPath;
     }
 }
