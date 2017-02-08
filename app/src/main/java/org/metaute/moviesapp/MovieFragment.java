@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.metaute.moviesapp.dummy.DummyContent;
-import org.metaute.moviesapp.dummy.DummyContent.DummyItem;
 import org.metaute.moviesapp.org.metaute.model.MovieInfo;
 
 import java.util.ArrayList;
@@ -80,7 +78,7 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                recyclerView.setLayoutManager(new GridLayoutManager(context, 3));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
@@ -120,6 +118,7 @@ public class MovieFragment extends Fragment implements FetchMoviesTask.MoviesInf
         for(MovieInfo result: results) {
             Log.d(LOG_TAG, result.toString());
         }
+        mAdapter.updateData(results);
     }
 
     /**

@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.metaute.moviesapp.MovieFragment.OnListFragmentInteractionListener;
-import org.metaute.moviesapp.dummy.DummyContent.DummyItem;
 import org.metaute.moviesapp.org.metaute.model.MovieInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link MovieInfo} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
@@ -50,6 +50,12 @@ public class MovieViewAdapter extends RecyclerView.Adapter<MovieViewAdapter.View
                 }
             }
         });
+    }
+
+    public void updateData(ArrayList<MovieInfo> newValues) {
+        mValues.clear();
+        mValues.addAll(newValues);
+        notifyDataSetChanged();
     }
 
     @Override
